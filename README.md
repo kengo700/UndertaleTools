@@ -9,7 +9,7 @@ Credits to Nishant S for multiline editable ListBox
 
 # Death's Gambitの日本語化
 ## 概要
-こちらのプログラムで、2Dアクションゲーム「Death's Gambit」に日本語を表示させることができます。
+こちらのプログラムで、2Dアクションゲーム「[Death's Gambit](https://store.steampowered.com/app/356650/Deaths_Gambit/)」に日本語を表示させることができます。
 
 方法は下記ページなどを参照ください。
 - https://github.com/fjay69/UndertaleTools/wiki
