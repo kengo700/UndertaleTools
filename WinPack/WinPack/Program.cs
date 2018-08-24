@@ -18,8 +18,8 @@ namespace WinPack
         static bool correctTXTR;
         static bool noAUDO;
         static List<fontInfo> newFonts = new List<fontInfo>();
-        static string[] chunks = new string[] { "GEN8","OPTN","LANG","EXTN","SOND","AGRP","SPRT","BGND","PATH","SCPT","GLOB","SHDR","FONT","TMLN","OBJT","ROOM","DAFL","EMBI","TPAG","CODE","VARI",
-                                    "FUNC","STRG","TXTR","AUDO"};
+        static string[] chunks = new string[] { "GEN8","OPTN","LANG","EXTN","SOND","AGRP","SPRT","BGND","PATH","SCPT","GLOB","SHDR","FONT","TMLN","OBJT","ROOM","DAFL","EMBI","TPAG","TGIN","CODE","VARI",
+                                    "FUNC","STRG","TXTR","AUDO"}; // Death's GambitのData.winに合わせて修正
 
         struct fontInfo {
             public int id;
@@ -276,8 +276,12 @@ namespace WinPack
                             h = (ushort)texture.Height;
                         }
                         ushort x = 0;
-                        ushort y = 0;                        
-                        ushort s = (ushort)(TXTR_count + f0 + 1);//???
+                        ushort y = 0;
+                        //ushort s = (ushort)(TXTR_count + f0 + 1);//???
+                        //ushort s = (ushort)(TXTR_count + f0);//??? 「\TXTR\136.png」がフォント用の画像として使われ、文字部分に断片的な画像が表示された
+                        //ushort s = (ushort)(TXTR_count + f0 + 42);//???
+                        //ushort s = (ushort)(TXTR_count + f0 + 43);//???
+                        ushort s = (ushort)(TXTR_count + f0 + 44);//???
 
                         editSprite((uint)bwrite.BaseStream.Position, x, y, w, h, s);                        
                         bwrite.BaseStream.Position += 22;
@@ -286,10 +290,14 @@ namespace WinPack
 
                     bwrite.Write((uint)0); chunk_size += 4;
                     //Unknown purpose zeros
-                    //for (int f=0; f<79; f++) 
-                    //{
+                    //for (int f = 0; f < 81; f++) // Death's GambitのData.winに合わせて修正
+                    //    {
                     //    bwrite.Write((byte)0); chunk_size += 1;
                     //}
+                    for (int f = 0; f < 1; f++) // 20180819のアプデで変更になった
+                    {
+                        bwrite.Write((byte)0); chunk_size += 1;
+                    }
                 }
                 else if (chunk_name == "TXTR")
                 {                    
@@ -325,10 +333,10 @@ namespace WinPack
                         {
                             bwrite.Write(0x00000000);
                             bwrite.Write(0xFFFFFFFF);
-                        } else bwrite.Write((uint)1);
+                        } else bwrite.Write((ulong)0); // 右ページで「FileInfo」チャンクのサイズが4x3なので https://github.com/panzi/cook-serve-hoomans2/blob/master/fileformat.md
                         Offsets[f] = (uint)bwrite.BaseStream.Position;
                         bwrite.Write((uint)0);
-                        chunk_size += 8; if (correctTXTR) chunk_size += 4;
+                        chunk_size += 12; if (correctTXTR) chunk_size += 8; // 右ページで「FileInfo」チャンクのサイズが4x3なので https://github.com/panzi/cook-serve-hoomans2/blob/master/fileformat.md
                     }
                     for (int f = 0; f < newFonts.Count; f++)
                     {
@@ -342,18 +350,18 @@ namespace WinPack
                             bwrite.Write(0x00000000);
                             bwrite.Write(0xFFFFFFFF);
                         }
-                        else bwrite.Write((uint)1);
+                        else bwrite.Write((ulong)0); // 右ページで「FileInfo」チャンクのサイズが4x3なので https://github.com/panzi/cook-serve-hoomans2/blob/master/fileformat.md
                         Offsets[f + files] = (uint)bwrite.BaseStream.Position;
                         bwrite.Write((uint)0);
-                        chunk_size += 8; if (correctTXTR) chunk_size += 4;
+                        chunk_size += 12; if (correctTXTR) chunk_size += 8; // 右ページで「FileInfo」チャンクのサイズが4x3なので https://github.com/panzi/cook-serve-hoomans2/blob/master/fileformat.md
                     }
 
                     //Неизвестно, зачем здесь нули, но игра запускается и без них
                     //Если требуется сравнить оригинальный win со сгенерированным, расскоментируйте строки
-                    //for (int f=0; f<13; f++) 
-                    //{
-                    //    bwrite.Write((uint)0); chunk_size += 4;
-                    //}
+                    for (int f = 0; f < 21; f++) // Death's GambitのData.winに合わせて修正
+                    {
+                        bwrite.Write((uint)0); chunk_size += 4;
+                    }
 
                     //Files
                     for (int f0 = 0; f0 < files; f0++)
@@ -470,7 +478,7 @@ namespace WinPack
             bwrite.Write(font.data.Element("font").Element("italic").Value == "0" ? (uint)0 : (uint)1);
             string[] range0 = font.data.Element("font").Element("ranges").Element("range0").Value.Split(',');
             bwrite.Write(Convert.ToUInt16(range0[0]));
-            bwrite.Write((ushort)1);//?
+            bwrite.Write((ushort)257);//?  // Death's GambitのData.winに合わせて修正（必要ないかも）
             bwrite.Write(Convert.ToUInt16(range0[1]));
             bwrite.Write((ushort)0);//?
             font.image_offset = (uint)bwrite.BaseStream.Position;

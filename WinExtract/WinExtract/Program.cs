@@ -90,8 +90,8 @@ namespace WinExtract
                         bread.BaseStream.Position = sprtoffset;
                         long sprt = bread.ReadUInt32();
                         bread.BaseStream.Position = sprt;
-                        string what = getSTRGEntry(bread.ReadUInt32());                        
-                        bread.BaseStream.Position += 0x34;//Skip 0x34 bytes
+                        string what = getSTRGEntry(bread.ReadUInt32());
+                        bread.BaseStream.Position += 0x48; // 右のページの「Sprite」の項を見ると、「sprite name」の終わりから「number of sub-sprites」まで72なので、0x48 bytesスキップに変更 https://github.com/panzi/cook-serve-hoomans2/blob/master/fileformat.md
                         //TPAG
                         uint spritec = bread.ReadUInt32();
                         for (int k=0; k < spritec; k++) {
@@ -138,10 +138,10 @@ namespace WinExtract
                     {
                         for (int i = 0; i < entries.Count - 1; i++)
                         {
-                            uint offset = entries[i];
-                            bread.BaseStream.Position = offset + 4;
-                            offset = bread.ReadUInt32();
-                            entries[i] = offset;
+                            ulong offset = entries[i];
+                            bread.BaseStream.Position = (long)(offset + 8); // 右ページによると、FileInfosのサイズが8になっているため https://github.com/panzi/cook-serve-hoomans2/blob/master/fileformat.md
+                            offset = bread.ReadUInt64(); // 右ページによると、FileInfosのサイズが8になっているため https://github.com/panzi/cook-serve-hoomans2/blob/master/fileformat.md
+                            entries[i] = (uint)offset;
                         }
                     }
                     filesToCreate = new List<endFiles>();
