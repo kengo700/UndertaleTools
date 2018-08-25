@@ -290,11 +290,7 @@ namespace WinPack
 
                     bwrite.Write((uint)0); chunk_size += 4;
                     //Unknown purpose zeros
-                    //for (int f = 0; f < 81; f++) // Death's GambitのData.winに合わせて修正
-                    //    {
-                    //    bwrite.Write((byte)0); chunk_size += 1;
-                    //}
-                    for (int f = 0; f < 1; f++) // 20180819のアプデで変更になった
+                    for (int f = 0; f < 27; f++) // 20180825のアプデ(1.0.2)で変更になった
                     {
                         bwrite.Write((byte)0); chunk_size += 1;
                     }

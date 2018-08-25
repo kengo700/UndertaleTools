@@ -4,7 +4,7 @@
     <StartArguments>"C:\Temp\DG\data.win" "C:\Temp\DG\extract" -unpackAUDO</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>"E:\Game Maker Games PS Vita\game [Va-11 Hall-a PS Vita].win" "E:\Game Maker Games PS Vita\VA"</StartArguments>
+    <StartArguments>"C:\Temp\DG\data.win" "C:\Temp\DG\extract" -unpackAUDO</StartArguments>
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
 </Project>
